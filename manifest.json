@@ -1,0 +1,21 @@
+{
+
+  "manifest_version": 2,
+  "name": "MouseVader",
+  "version": "1.2",
+
+  "description": "A privacy tool that mislead trackers by creating noise in the collected user behavioral data via fake random mouse movement events in the background so it doesn't impact user experience",
+
+  "icons": {
+	  "860": "darth.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["mousevader.js"]
+    }
+  ]
+
+}
+
