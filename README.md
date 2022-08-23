@@ -13,4 +13,4 @@ Then use the below command to build your extension package
 web-ext build -s MouseVader/Firefox -a artifacts/
 ```
 
-where "artifacts" is the folder you wish to place the output package at
+where "artifacts" is the folder you wish to place the output package at.
