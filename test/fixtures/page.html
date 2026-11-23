@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>MouseVader test page</title>
+<style>
+  body { font: 14px sans-serif; margin: 0; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 8px; }
+  .card { border: 1px solid #ccc; padding: 10px; height: 60px; }
+  .card:hover { background: #fee; }
+  #menu { display: none; position: absolute; top: 40px; left: 10px; background: #ffd; border: 1px solid #aa0; padding: 6px; }
+  #menuBtn:hover + #menu, #menu:hover { display: block; }
+</style></head>
+<body>
+  <nav style="padding:8px"><button id="menuBtn">Menu</button><div id="menu"><a href="#">One</a> <a href="#">Two</a></div></nav>
+  <div class="grid" id="grid"></div>
+  <form style="padding:8px"><input id="field" placeholder="type here"><textarea id="area"></textarea></form>
+  <video id="vid" width="160" height="90"></video>
+  <script>
+    // Tracker stand-in: records every pointer/mouse event, split by isTrusted.
+    const grid = document.getElementById("grid");
+    for (let i = 0; i < 60; i++) {
+      const d = document.createElement("div");
+      d.className = "card"; d.id = "c" + i;
+      d.innerHTML = `<a href="#c${i}">Item ${i}</a> <span>details</span>`;
+      grid.append(d);
+    }
+    window.__log = [];
+    for (const t of ["pointerover", "pointermove", "pointerout", "mouseover", "mousemove", "mouseout", "click", "mousedown", "focusin", "input"])
+      document.addEventListener(t, e => __log.push({ t: e.type, trusted: e.isTrusted, id: e.target.id || e.target.tagName,
+        tag: e.target.tagName, at: performance.now(), x: e.clientX, y: e.clientY }), true);
+    window.__summary = (since = 0) => {
+      const ev = __log.filter(e => e.at >= since);
+      const fake = ev.filter(e => !e.trusted), real = ev.filter(e => e.trusted);
+      return { fake: fake.length, real: real.length, fakeTypes: [...new Set(fake.map(e => e.t))].sort(),
+               fakeTags: [...new Set(fake.map(e => e.tag))].sort(), lastReal: real.length ? real.at(-1).at : null,
+               fakeTimes: fake.map(e => e.at), now: performance.now() };
+    };
+  </script>
+</body>
+</html>
