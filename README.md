@@ -62,7 +62,7 @@ The end-to-end tests run Firefox headless; set `E2E_HEADFUL=1` to watch. Set `FI
 
 To try it by hand, load `manifest.json` from *about:debugging* → *This Firefox* → *Load Temporary Add-on*.
 
-Building for the add-on store: `npm run build` writes the package. If the store listing has an add-on ID, add it to `manifest.json` under `browser_specific_settings.gecko.id` before uploading a new version. `npm run build -- --test` makes a test-only package with a fixed ID; don't ship it.
+Building for the add-on store: `npm run build` writes the package. `manifest.json` carries the store listing's add-on ID (`browser_specific_settings.gecko.id`), so a new version is accepted as an update of the existing listing, and declares that MouseVader collects no data. `npm run build -- --test` makes a test-only package with a different, fixed ID; don't ship it.
 
 ## Layout
 
