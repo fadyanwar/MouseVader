@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Daily Example</title>
+<style>
+  :root { --ink: #1b1f24; --muted: #5d6673; --line: #e3e6ea; --brand: #0f4c81; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 Georgia, "Times New Roman", serif; color: var(--ink); background: #fbfaf7; }
+  header { background: #fff; border-bottom: 1px solid var(--line); padding: 14px 40px; display: flex; align-items: center; gap: 32px; }
+  .logo { font: 700 28px/1 Georgia, serif; letter-spacing: -.5px; }
+  nav { display: flex; gap: 22px; font: 15px system-ui, sans-serif; position: relative; }
+  nav a { color: var(--ink); text-decoration: none; }
+  .menu { position: relative; }
+  .drop { display: none; position: absolute; top: 26px; left: -10px; background: #fff; border: 1px solid var(--line);
+          box-shadow: 0 6px 18px rgba(0,0,0,.12); padding: 8px 0; min-width: 180px; z-index: 5; }
+  .drop a { display: block; padding: 6px 14px; }
+  .menu:hover .drop { display: block; }
+  main { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 22px; padding: 26px 40px; max-width: 1380px; }
+  article { background: #fff; border: 1px solid var(--line); padding: 16px 18px; }
+  article.lead { grid-row: span 2; }
+  article h2 { margin: 6px 0 8px; font-size: 21px; line-height: 1.25; }
+  article.lead h2 { font-size: 32px; }
+  .kicker { font: 600 12px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .08em; color: var(--brand); }
+  .img { height: 120px; background: linear-gradient(135deg, #cfd8e3, #e9edf2); margin-bottom: 10px; }
+  article.lead .img { height: 300px; }
+  p { margin: 0; color: var(--muted); }
+  #tracker { position: fixed; right: 18px; bottom: 18px; width: 330px; background: rgba(17,19,24,.92); color: #f3f4f6;
+             font: 13px/1.4 system-ui, sans-serif; border-radius: 10px; padding: 12px 14px; z-index: 20; }
+  #tracker h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: #9ca3af; }
+  .k { display: flex; justify-content: space-between; } .k b { font-variant-numeric: tabular-nums; }
+  .real { color: #60a5fa; } .fake { color: #f87171; }
+  canvas#trail { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+</style>
+</head>
+<body>
+<canvas id="trail"></canvas>
+<header>
+  <div class="logo">The Daily Example</div>
+  <nav>
+    <a href="#">World</a>
+    <span class="menu" id="menu"><a href="#" id="sections">Sections ▾</a>
+      <span class="drop"><a href="#">Business</a><a href="#">Technology</a><a href="#">Travel</a><a href="#">Food</a></span></span>
+    <a href="#">Sport</a><a href="#">Culture</a><a href="#">Opinion</a>
+  </nav>
+</header>
+<main id="main"></main>
+<aside id="tracker" aria-label="Tracker view">
+  <h3>What a tracker records</h3>
+  <div class="k"><span class="real">● Hovers by your real pointer</span><b id="real">0</b></div>
+  <div class="k"><span class="fake">● Hovers by MouseVader</span><b id="fake">0</b></div>
+  <div class="k" style="margin-top:4px;color:#9ca3af"><span>Elements "of interest"</span><b id="els">0</b></div>
+</aside>
+<script>
+  const stories = [
+    ["Climate", "Coastal towns plan for higher tides"], ["Business", "Small firms bet on four-day weeks"],
+    ["Technology", "Why your phone knows where you parked"], ["Travel", "Night trains make a comeback"],
+    ["Food", "The quiet return of the corner bakery"], ["Sport", "A record that stood for 40 years falls"],
+    ["Culture", "A museum without walls opens online"], ["Science", "Bees can count, a new study says"],
+    ["Opinion", "Who owns the data you leave behind?"], ["Health", "The case for a ten-minute walk"],
+    ["World", "Border town votes to share one school"],
+  ];
+  const main = document.getElementById("main");
+  stories.forEach(([k, h], i) => {
+    const a = document.createElement("article");
+    if (i === 0) a.className = "lead";
+    a.innerHTML = `<div class="img"></div><div class="kicker">${k}</div><h2>${h}</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae libero ac risus.</p>`;
+    main.append(a);
+  });
+
+  // Tracker stand-in: records every pointer movement and draws it. Blue = trusted (a person), red = untrusted.
+  const cv = document.getElementById("trail"), ctx = cv.getContext("2d");
+  function size() { cv.width = innerWidth; cv.height = innerHeight; }
+  size(); addEventListener("resize", size);
+  const counts = { real: 0, fake: 0 }, touched = new Set(), last = { real: null, fake: null };
+  const dots = [];
+  // count hovers (elements entered), as a tracker scoring interest would; draw every movement
+  document.addEventListener("mouseover", e => {
+    const kind = e.isTrusted ? "real" : "fake";
+    counts[kind]++;
+    document.getElementById(kind).textContent = counts[kind].toLocaleString();
+  }, true);
+  document.addEventListener("mousemove", e => {
+    const kind = e.isTrusted ? "real" : "fake";
+    if (!e.isTrusted) touched.add(e.target.closest("article,nav a,.menu,header") || e.target);
+    dots.push({ x: e.clientX, y: e.clientY, kind, prev: last[kind], t: performance.now() });
+    last[kind] = { x: e.clientX, y: e.clientY, t: performance.now() };
+    document.getElementById("els").textContent = touched.size;
+  }, true);
+  (function draw() {
+    const now = performance.now();
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    while (dots.length && now - dots[0].t > 6000) dots.shift();
+    for (const d of dots) {
+      const a = Math.max(0, 1 - (now - d.t) / 6000);
+      const col = d.kind === "real" ? `rgba(37,99,235,${a})` : `rgba(220,38,38,${a})`;
+      if (d.prev && d.t - d.prev.t < 1500) {
+        ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(d.prev.x, d.prev.y); ctx.lineTo(d.x, d.y); ctx.stroke();
+      }
+      ctx.fillStyle = col; ctx.beginPath(); ctx.arc(d.x, d.y, 5, 0, 7); ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  })();
+</script>
+</body>
+</html>

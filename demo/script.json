@@ -1,0 +1,14 @@
+{
+  "voice": "en_GB-cori-high",
+  "title": { "heading": "MouseVader", "sub": "Pollute the tracking data, not your browsing", "seconds": 3 },
+  "scenes": [
+    { "id": "intro",    "text": "Many websites record where your mouse goes: what you hover over, and for how long. That trail says a lot about your interests." },
+    { "id": "noise",    "text": "MouseVader adds noise to it. While you browse, it makes fake pointer visits to random parts of the page, and trackers record them right alongside your real ones." },
+    { "id": "pause",    "text": "It stays out of your way. When you use the mouse yourself, it pauses, so it never closes a menu you opened." },
+    { "id": "popup",    "text": "The toolbar button shows how much noise it has added, and lets you switch it off for this site, or everywhere." },
+    { "id": "speed",    "text": "Off on this site means no fake activity here at all. Switch it back on, and choose how much noise you want: slow, normal or fast." },
+    { "id": "settings", "text": "In settings, keep a list of sites to leave alone, and choose how long to pause after you use the page." },
+    { "id": "end",      "text": "MouseVader for Firefox. Free and open source. It collects nothing, and sends nothing." }
+  ],
+  "end": { "heading": "MouseVader for Firefox", "sub": "addons.mozilla.org/firefox/addon/mousevader", "note": "Free · open source · collects nothing" }
+}
