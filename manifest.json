@@ -1,21 +1,50 @@
 {
-
   "manifest_version": 2,
   "name": "MouseVader",
-  "version": "1.2",
-
-  "description": "A privacy tool that mislead trackers by creating noise in the collected user behavioral data via fake random mouse movement events in the background so it doesn't impact user experience",
+  "version": "2.0",
+  "description": "A privacy tool that misleads trackers by adding noise to the behavioural data they collect: fake, random pointer activity in the background that doesn't get in your way.",
+  "homepage_url": "https://github.com/fadyanwar/MouseVader",
 
   "icons": {
-	  "860": "darth.png"
+    "16": "icons/darth-16.png",
+    "32": "icons/darth-32.png",
+    "48": "icons/darth-48.png",
+    "96": "icons/darth-96.png",
+    "128": "icons/darth-128.png"
+  },
+
+  "permissions": ["storage"],
+
+  "background": {
+    "scripts": ["src/core.js", "src/background.js"]
   },
 
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["mousevader.js"]
+      "js": ["src/core.js", "src/content.js"],
+      "run_at": "document_idle"
     }
-  ]
+  ],
 
+  "browser_action": {
+    "default_title": "MouseVader",
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/darth-16.png",
+      "32": "icons/darth-32.png"
+    }
+  },
+
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
+  },
+
+  "commands": {
+    "toggle-mousevader": {
+      "suggested_key": { "default": "Alt+Shift+M" },
+      "description": "Switch MouseVader on or off"
+    }
+  }
 }
-

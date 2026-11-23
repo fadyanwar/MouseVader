@@ -1,0 +1,19 @@
+{
+  "name": "mousevader",
+  "version": "2.0.0",
+  "private": true,
+  "description": "MouseVader Firefox extension: fake pointer activity that pollutes behavioural tracking data",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test:unit": "node --test \"test/unit/*.test.mjs\"",
+    "test:system": "node --test \"test/system/*.test.mjs\"",
+    "test:e2e": "node test/e2e/firefox.e2e.mjs",
+    "test": "node --test \"test/unit/*.test.mjs\" \"test/system/*.test.mjs\"",
+    "test:all": "npm test && npm run test:e2e"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "selenium-webdriver": "^4.33.0"
+  }
+}

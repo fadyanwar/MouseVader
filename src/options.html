@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MouseVader settings</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { max-width: 640px; padding: 20px 24px 40px; }
+    ul.sites { list-style: none; padding: 0; margin: 0; border: 1px solid var(--line); border-radius: 8px; }
+    ul.sites li { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+    ul.sites li:last-child { border-bottom: 0; }
+    ul.sites li.empty { color: var(--muted); }
+    form.add { display: flex; gap: 8px; margin-top: 10px; }
+    form.add input { flex: 1; }
+    .saved { color: var(--ok); font-size: 12px; min-height: 1em; }
+    details { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <img src="../icons/darth-64.png" alt="">
+    <div><h1>MouseVader settings</h1><div class="muted">Changes apply to open tabs straight away.</div></div>
+  </div>
+
+  <h2>General</h2>
+  <div class="row">
+    <label for="enabled">MouseVader on<span class="sub">Turn the fake activity off on every site.</span></label>
+    <span class="switch"><input type="checkbox" id="enabled" role="switch"><span></span></span>
+  </div>
+  <div class="row">
+    <span id="speedLabel">Speed<span class="sub">How often and how much fake activity is added.</span></span>
+    <div class="seg" role="group" aria-labelledby="speedLabel" id="speed">
+      <button type="button" data-speed="slow" aria-pressed="false">Slow</button>
+      <button type="button" data-speed="normal" aria-pressed="false">Normal</button>
+      <button type="button" data-speed="fast" aria-pressed="false">Fast</button>
+    </div>
+  </div>
+  <div class="row">
+    <label for="pause">Pause while I use the page<span class="sub">Fake activity waits this long after your own mouse, keyboard or scrolling.</span></label>
+    <select id="pause">
+      <option value="0">Never pause</option>
+      <option value="1000">1 second</option>
+      <option value="3000">3 seconds</option>
+      <option value="5000">5 seconds</option>
+      <option value="10000">10 seconds</option>
+    </select>
+  </div>
+  <div class="row">
+    <label for="background">Keep running in background tabs<span class="sub">More noise; uses a little more battery.</span></label>
+    <span class="switch"><input type="checkbox" id="background" role="switch"><span></span></span>
+  </div>
+  <div class="row">
+    <label for="debug">Log activity to the page console<span class="sub">For troubleshooting.</span></label>
+    <span class="switch"><input type="checkbox" id="debug" role="switch"><span></span></span>
+  </div>
+
+  <h2>Excluded sites</h2>
+  <p class="muted" style="margin-top:0">MouseVader does nothing on these sites. <code>example.com</code> also covers its subdomains; <code>*.example.com</code> covers only subdomains.</p>
+  <ul class="sites" id="sites"></ul>
+  <form class="add" id="addForm">
+    <label for="newSite" class="muted" style="align-self:center">Add</label>
+    <input type="text" id="newSite" placeholder="example.com or a page address" autocomplete="off" spellcheck="false">
+    <button type="submit" class="primary">Exclude</button>
+  </form>
+  <p class="error" id="addError" role="alert"></p>
+
+  <div style="display:flex; gap:10px; align-items:center; margin-top:24px">
+    <button type="button" class="secondary" id="reset">Reset to defaults</button>
+    <span class="saved" id="saved" role="status"></span>
+  </div>
+
+  <details>
+    <summary>How MouseVader works, and its limits</summary>
+    <p>Many sites record where your pointer goes to learn what interests you. MouseVader adds fake pointer
+      visits to random elements on the page: it enters an element, moves around inside it for a moment and
+      leaves, the way a mouse does. Trackers record those visits next to your real ones, which makes the
+      profile they build of you less accurate.</p>
+    <p>It never clicks, types, scrolls or touches form fields, video or editable areas, and it pauses while
+      you use the page so it doesn't close menus you opened. Browsers mark script-generated events as
+      untrusted (<code>isTrusted = false</code>); a tracker that checks this flag can filter MouseVader's events
+      out. Many don't, but it's a limit no extension can remove.</p>
+  </details>
+
+  <script src="core.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
