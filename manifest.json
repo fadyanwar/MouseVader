@@ -5,6 +5,14 @@
   "description": "A privacy tool that misleads trackers by adding noise to the behavioural data they collect: fake, random pointer activity in the background that doesn't get in your way.",
   "homepage_url": "https://github.com/fadyanwar/MouseVader",
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{ca68687b-3485-4894-b39c-15480de86a56}",
+      "strict_min_version": "115.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+
   "icons": {
     "16": "icons/darth-16.png",
     "32": "icons/darth-32.png",

@@ -34,9 +34,11 @@ async function findTarget() {
     const [tab] = await ext.tabs.query({ active: true, currentWindow: true });
     return tab ? ask(tab.id) : null;
   }
-  const others = (await ext.tabs.query({ currentWindow: true }))
-    .filter(t => t.id !== self.id).sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
-  for (const t of others) { const r = await ask(t.id); if (r) return r; }
+  // Same window first, then any window (the page may be open as a window of its own).
+  const byRecent = (a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0);
+  const here = (await ext.tabs.query({ currentWindow: true })).filter(t => t.id !== self.id).sort(byRecent);
+  const elsewhere = (await ext.tabs.query({})).filter(t => t.id !== self.id && t.windowId !== self.windowId).sort(byRecent);
+  for (const t of here.concat(elsewhere)) { const r = await ask(t.id); if (r) return r; }
   return null;
 }
 

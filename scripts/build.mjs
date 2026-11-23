@@ -19,7 +19,8 @@ export function build({ test = false, out } = {}) {
   try {
     for (const f of FILES) cpSync(join(ROOT, f), join(stage, f), { recursive: true });
     if (test) {
-      manifest.browser_specific_settings = { gecko: { id: TEST_ID } };
+      const bss = manifest.browser_specific_settings || {};
+      manifest.browser_specific_settings = { ...bss, gecko: { ...(bss.gecko || {}), id: TEST_ID } };
       writeFileSync(join(stage, "manifest.json"), JSON.stringify(manifest, null, 2));
     }
     const dest = out || join(ROOT, "dist", `mousevader-${manifest.version}${test ? "-test" : ""}.xpi`);
